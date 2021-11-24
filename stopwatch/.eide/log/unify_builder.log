@@ -1,0 +1,228 @@
+[2021-11-22 11:26:16]	compilation failed at : "e:\MEI\3_cource\kyrsovoi-5semestr\stopwatch\src\kp.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x0116f] in <881485cd164b4f5a918f957d29d55652>:0 
+
+[2021-11-22 11:26:34]	compilation failed at : "e:\MEI\3_cource\kyrsovoi-5semestr\stopwatch\src\kp.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x0116f] in <881485cd164b4f5a918f957d29d55652>:0 
+
+[2021-11-22 11:27:18]	compilation failed at : "e:\MEI\3_cource\kyrsovoi-5semestr\stopwatch\src\Проект программы\kp.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x0116f] in <881485cd164b4f5a918f957d29d55652>:0 
+
+[2021-11-22 11:28:04]	[done]
+	build successfully !
+
+[2021-11-22 11:31:18]	compilation failed at : "e:\MEI\3_cource\kyrsovoi-5semestr\stopwatch\src\main.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x0116f] in <881485cd164b4f5a918f957d29d55652>:0 
+
+[2021-11-22 11:31:48]	[done]
+	build successfully !
+
+[2021-11-22 15:15:50]	[done]
+	build successfully !
+
+[2021-11-22 15:19:16]	[done]
+	build successfully !
+
+[2021-11-22 15:20:37]	[done]
+	build successfully !
+
+[2021-11-22 15:22:37]	[done]
+	build successfully !
+
+[2021-11-22 15:24:59]	[done]
+	build successfully !
+
+[2021-11-22 15:27:00]	[done]
+	build successfully !
+
+[2021-11-22 15:27:56]	[done]
+	build successfully !
+
+[2021-11-22 15:28:40]	[done]
+	build successfully !
+
+[2021-11-22 15:29:07]	[done]
+	build successfully !
+
+[2021-11-22 15:31:14]	[done]
+	build successfully !
+
+[2021-11-22 15:31:48]	[done]
+	build successfully !
+
+[2021-11-22 15:32:35]	[done]
+	build successfully !
+
+[2021-11-22 15:33:09]	[done]
+	build successfully !
+
+[2021-11-22 15:42:43]	[done]
+	build successfully !
+
+[2021-11-22 15:43:35]	[done]
+	build successfully !
+
+[2021-11-22 15:45:07]	[done]
+	build successfully !
+
+[2021-11-22 15:46:59]	[done]
+	build successfully !
+
+[2021-11-22 15:49:39]	[done]
+	build successfully !
+
+[2021-11-22 15:52:54]	[done]
+	build successfully !
+
+[2021-11-22 15:59:33]	[done]
+	build successfully !
+
+[2021-11-22 16:02:54]	[done]
+	build successfully !
+
+[2021-11-22 16:06:50]	[done]
+	build successfully !
+
+[2021-11-22 16:07:33]	[done]
+	build successfully !
+
+[2021-11-22 16:07:41]	[done]
+	build successfully !
+
+[2021-11-22 16:11:30]	[done]
+	build successfully !
+
+[2021-11-22 16:13:28]	[done]
+	build successfully !
+
+[2021-11-22 16:14:25]	[done]
+	build successfully !
+
+[2021-11-22 16:17:46]	[done]
+	build successfully !
+
+[2021-11-22 16:21:03]	[done]
+	build successfully !
+
+[2021-11-22 16:23:13]	[done]
+	build successfully !
+
+[2021-11-24 13:14:31]	[done]
+	build successfully !
+
+[2021-11-24 13:16:40]	[done]
+	build successfully !
+
+[2021-11-24 13:25:09]	[done]
+	build successfully !
+
+[2021-11-24 13:28:36]	[done]
+	build successfully !
+
+[2021-11-24 13:40:30]	[done]
+	build successfully !
+
+[2021-11-24 14:06:04]	[done]
+	build successfully !
+
+[2021-11-24 14:07:35]	[done]
+	build successfully !
+
+[2021-11-24 14:08:06]	[done]
+	build successfully !
+
+[2021-11-24 14:09:37]	[done]
+	build successfully !
+
+[2021-11-24 14:11:01]	[done]
+	build successfully !
+
+[2021-11-24 14:12:04]	[done]
+	build successfully !
+
+[2021-11-24 14:12:29]	[done]
+	build successfully !
+
+[2021-11-24 14:15:25]	[done]
+	build successfully !
+
+[2021-11-24 14:16:20]	[done]
+	build successfully !
+
+[2021-11-24 14:17:28]	[done]
+	build successfully !
+
+[2021-11-24 14:21:23]	[done]
+	build successfully !
+
+[2021-11-24 14:22:44]	[done]
+	build successfully !
+
+[2021-11-24 14:24:47]	[done]
+	build successfully !
+
+[2021-11-24 14:29:42]	[done]
+	build successfully !
+
+[2021-11-24 14:42:37]	[done]
+	build successfully !
+
+[2021-11-24 14:42:59]	[done]
+	build successfully !
+
+[2021-11-24 15:11:45]	[done]
+	build successfully !
+
+[2021-11-24 15:12:21]	[done]
+	build successfully !
+
+[2021-11-24 15:13:17]	[done]
+	build successfully !
+
+[2021-11-24 15:19:30]	[done]
+	build successfully !
+
+[2021-11-24 15:21:15]	compilation failed at : "e:\MEI\3_cource\kyrsovoi-5semestr\stopwatch\src\main.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x0116f] in <881485cd164b4f5a918f957d29d55652>:0 
+
+[2021-11-24 15:21:33]	[done]
+	build successfully !
+
+[2021-11-24 15:28:08]	[done]
+	build successfully !
+
+[2021-11-24 15:29:07]	[done]
+	build successfully !
+
+[2021-11-24 15:30:18]	[done]
+	build successfully !
+
+[2021-11-24 15:30:52]	[done]
+	build successfully !
+
+[2021-11-24 15:36:13]	[done]
+	build successfully !
+
+[2021-11-24 15:36:38]	[done]
+	build successfully !
+
+[2021-11-24 15:37:49]	[done]
+	build successfully !
+
+[2021-11-24 15:40:45]	[done]
+	build successfully !
+
+[2021-11-24 15:46:11]	[done]
+	build successfully !
+
+[2021-11-24 15:55:58]	[done]
+	build successfully !
+
+[2021-11-24 15:57:20]	[done]
+	build successfully !
+
+[2021-11-24 16:04:27]	[done]
+	build successfully !
+
+[2021-11-24 16:05:20]	[done]
+	build successfully !
+
