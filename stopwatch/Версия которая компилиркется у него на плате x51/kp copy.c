@@ -33,11 +33,11 @@ unsigned char timeMin = 0;
 unsigned char timeHour = 0;
 
 //Массивы для хранения цифр
-unsigned char first[digitWidth];
-unsigned char second[digitWidth];
+data unsigned char first[digitWidth];
+data unsigned char second[digitWidth];
 
 //Функция записи цифры в массив
-void setData(unsigned char digit, unsigned char *array)
+void setData(unsigned char digit, unsigned char data *array)
 {
 	switch(digit)
 	{

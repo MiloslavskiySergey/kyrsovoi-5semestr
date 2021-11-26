@@ -24,7 +24,7 @@
 	.globl _RS1
 	.globl _RS0
 	.globl _OV
-	.globl _F1
+	.globl _FL
 	.globl _P
 	.globl _PS
 	.globl _PT1
@@ -94,6 +94,7 @@
 	.globl _P0_1
 	.globl _P0_0
 	.globl _B
+	.globl _A
 	.globl _ACC
 	.globl _PSW
 	.globl _IP
@@ -119,9 +120,9 @@
 	.globl _timeHour
 	.globl _timeMin
 	.globl _timeSec
+	.globl _time10ms
 	.globl _ptrColumn
 	.globl _mode
-	.globl _count10ms
 	.globl _started
 ;--------------------------------------------------------
 ; special function registers
@@ -148,6 +149,7 @@ _P3	=	0x00b0
 _IP	=	0x00b8
 _PSW	=	0x00d0
 _ACC	=	0x00e0
+_A	=	0x00e0
 _B	=	0x00f0
 ;--------------------------------------------------------
 ; special function bits
@@ -222,7 +224,7 @@ _PX1	=	0x00ba
 _PT1	=	0x00bb
 _PS	=	0x00bc
 _P	=	0x00d0
-_F1	=	0x00d1
+_FL	=	0x00d1
 _OV	=	0x00d2
 _RS0	=	0x00d3
 _RS1	=	0x00d4
@@ -235,16 +237,30 @@ _CY	=	0x00d7
 	.area REG_BANK_0	(REL,OVR,DATA)
 	.ds 8
 ;--------------------------------------------------------
+; overlayable bit register bank
+;--------------------------------------------------------
+	.area BIT_BANK	(REL,OVR,DATA)
+bits:
+	.ds 1
+	b0 = bits[0]
+	b1 = bits[1]
+	b2 = bits[2]
+	b3 = bits[3]
+	b4 = bits[4]
+	b5 = bits[5]
+	b6 = bits[6]
+	b7 = bits[7]
+;--------------------------------------------------------
 ; internal ram data
 ;--------------------------------------------------------
 	.area DSEG    (DATA)
 _started::
 	.ds 1
-_count10ms::
-	.ds 1
 _mode::
 	.ds 1
 _ptrColumn::
+	.ds 1
+_time10ms::
 	.ds 1
 _timeSec::
 	.ds 1
@@ -331,19 +347,19 @@ __interrupt_vect:
 	.globl __mcs51_genXINIT
 	.globl __mcs51_genXRAMCLEAR
 	.globl __mcs51_genRAMCLEAR
-;	.\src\main.c:16: unsigned char started = 0;
+;	.\src\main.c:14: unsigned char started = 0;
 	mov	_started,#0x00
-;	.\src\main.c:19: unsigned char count10ms=0;
-	mov	_count10ms,#0x00
-;	.\src\main.c:25: unsigned char mode = 0;
-	mov	_mode,#0x00
-;	.\src\main.c:28: unsigned char ptrColumn = 0;
+;	.\src\main.c:21: unsigned char mode = 1;
+	mov	_mode,#0x01
+;	.\src\main.c:24: unsigned char ptrColumn = 0;
 	mov	_ptrColumn,#0x00
-;	.\src\main.c:31: unsigned char timeSec = 0;
+;	.\src\main.c:27: unsigned char time10ms = 0;
+	mov	_time10ms,#0x00
+;	.\src\main.c:29: unsigned char timeSec = 0;
 	mov	_timeSec,#0x00
-;	.\src\main.c:33: unsigned char timeMin = 0;
+;	.\src\main.c:31: unsigned char timeMin = 0;
 	mov	_timeMin,#0x00
-;	.\src\main.c:35: unsigned char timeHour = 0;
+;	.\src\main.c:33: unsigned char timeHour = 0;
 	mov	_timeHour,#0x00
 	.area GSFINAL (CODE)
 	ljmp	__sdcc_program_startup
@@ -365,7 +381,7 @@ __sdcc_program_startup:
 ;array                     Allocated with name '_setData_PARM_2'
 ;digit                     Allocated to registers r7 
 ;------------------------------------------------------------
-;	.\src\main.c:44: void setData(unsigned char digit, unsigned char *array)
+;	.\src\main.c:40: void setData(unsigned char digit, unsigned char *array)
 ;	-----------------------------------------
 ;	 function setData
 ;	-----------------------------------------
@@ -378,7 +394,7 @@ _setData:
 	ar2 = 0x02
 	ar1 = 0x01
 	ar0 = 0x00
-;	.\src\main.c:46: switch(digit)
+;	.\src\main.c:42: switch(digit)
 	mov	a,dpl
 	mov	r7,a
 	add	a,#0xff - 0x09
@@ -401,19 +417,19 @@ _setData:
 	ljmp	00108$
 	ljmp	00109$
 	ljmp	00110$
-;	.\src\main.c:49: case 0:
+;	.\src\main.c:45: case 0:
 00101$:
-;	.\src\main.c:51: array[0] = 0x1F;
+;	.\src\main.c:47: array[0] = 0x00;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x1f
+	clr	a
 	lcall	__gptrput
-;	.\src\main.c:53: array[1] = 0x11;
-	mov	a,#0x01
+;	.\src\main.c:49: array[1] = 0x0E;
+	inc	a
 	add	a,r5
 	mov	r2,a
 	clr	a
@@ -423,9 +439,9 @@ _setData:
 	mov	dpl,r2
 	mov	dph,r3
 	mov	b,r4
-	mov	a,#0x11
+	mov	a,#0x0e
 	lcall	__gptrput
-;	.\src\main.c:55: array[2] = 0x1F;
+;	.\src\main.c:51: array[2] = 0x00;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -435,22 +451,22 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x1f
-;	.\src\main.c:60: break;
+	clr	a
+;	.\src\main.c:56: break;
 	ljmp	__gptrput
-;	.\src\main.c:61: case 1:
+;	.\src\main.c:57: case 1:
 00102$:
-;	.\src\main.c:62: array[0] = 0x1F;
+;	.\src\main.c:58: array[0] = 0x00;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x1f
+	clr	a
 	lcall	__gptrput
-;	.\src\main.c:63: array[1] = 0x02;
-	mov	a,#0x01
+;	.\src\main.c:59: array[1] = 0x1D;
+	inc	a
 	add	a,r5
 	mov	r2,a
 	clr	a
@@ -460,45 +476,9 @@ _setData:
 	mov	dpl,r2
 	mov	dph,r3
 	mov	b,r4
-	mov	a,#0x02
+	mov	a,#0x1d
 	lcall	__gptrput
-;	.\src\main.c:64: array[2] = 0x04;
-	add	a,r5
-	mov	r5,a
-	clr	a
-	addc	a,r6
-	mov	r6,a
-	mov	dpl,r5
-	mov	dph,r6
-	mov	b,r7
-	mov	a,#0x04
-;	.\src\main.c:65: break;
-	ljmp	__gptrput
-;	.\src\main.c:66: case 2:
-00103$:
-;	.\src\main.c:67: array[0] = 0x17;
-	mov	r5,_setData_PARM_2
-	mov	r6,(_setData_PARM_2 + 1)
-	mov	r7,(_setData_PARM_2 + 2)
-	mov	dpl,r5
-	mov	dph,r6
-	mov	b,r7
-	mov	a,#0x17
-	lcall	__gptrput
-;	.\src\main.c:68: array[1] = 0x15;
-	mov	a,#0x01
-	add	a,r5
-	mov	r2,a
-	clr	a
-	addc	a,r6
-	mov	r3,a
-	mov	ar4,r7
-	mov	dpl,r2
-	mov	dph,r3
-	mov	b,r4
-	mov	a,#0x15
-	lcall	__gptrput
-;	.\src\main.c:69: array[2] = 0x1B;
+;	.\src\main.c:60: array[2] = 0x1B;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -509,20 +489,20 @@ _setData:
 	mov	dph,r6
 	mov	b,r7
 	mov	a,#0x1b
-;	.\src\main.c:70: break;
+;	.\src\main.c:61: break;
 	ljmp	__gptrput
-;	.\src\main.c:71: case 3:
-00104$:
-;	.\src\main.c:72: array[0] = 0x1F;
+;	.\src\main.c:62: case 2:
+00103$:
+;	.\src\main.c:63: array[0] = 0x08;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x1f
+	mov	a,#0x08
 	lcall	__gptrput
-;	.\src\main.c:73: array[1] = 0x15;
+;	.\src\main.c:64: array[1] = 0x0A;
 	mov	a,#0x01
 	add	a,r5
 	mov	r2,a
@@ -533,9 +513,9 @@ _setData:
 	mov	dpl,r2
 	mov	dph,r3
 	mov	b,r4
-	mov	a,#0x15
+	mov	a,#0x0a
 	lcall	__gptrput
-;	.\src\main.c:74: array[2] = 0x15;
+;	.\src\main.c:65: array[2] = 0x04;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -545,35 +525,35 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x15
-;	.\src\main.c:75: break;
-	ljmp	__gptrput
-;	.\src\main.c:76: case 4:
-00105$:
-;	.\src\main.c:77: array[0] = 0x1F;
-	mov	r5,_setData_PARM_2
-	mov	r6,(_setData_PARM_2 + 1)
-	mov	r7,(_setData_PARM_2 + 2)
-	mov	dpl,r5
-	mov	dph,r6
-	mov	b,r7
-	mov	a,#0x1f
-	lcall	__gptrput
-;	.\src\main.c:78: array[1] = 0x04;
-	mov	a,#0x01
-	add	a,r5
-	mov	r2,a
-	clr	a
-	addc	a,r6
-	mov	r3,a
-	mov	ar4,r7
-	mov	dpl,r2
-	mov	dph,r3
-	mov	b,r4
 	mov	a,#0x04
+;	.\src\main.c:66: break;
+	ljmp	__gptrput
+;	.\src\main.c:67: case 3:
+00104$:
+;	.\src\main.c:68: array[0] = 0x00;
+	mov	r5,_setData_PARM_2
+	mov	r6,(_setData_PARM_2 + 1)
+	mov	r7,(_setData_PARM_2 + 2)
+	mov	dpl,r5
+	mov	dph,r6
+	mov	b,r7
+	clr	a
 	lcall	__gptrput
-;	.\src\main.c:79: array[2] = 0x07;
-	rr	a
+;	.\src\main.c:69: array[1] = 0x0A;
+	inc	a
+	add	a,r5
+	mov	r2,a
+	clr	a
+	addc	a,r6
+	mov	r3,a
+	mov	ar4,r7
+	mov	dpl,r2
+	mov	dph,r3
+	mov	b,r4
+	mov	a,#0x0a
+	lcall	__gptrput
+;	.\src\main.c:70: array[2] = 0x0A;
+	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
 	clr	a
@@ -582,22 +562,59 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x07
-;	.\src\main.c:80: break;
+	mov	a,#0x0a
+;	.\src\main.c:71: break;
 	ljmp	__gptrput
-;	.\src\main.c:81: case 5:
+;	.\src\main.c:72: case 4:
+00105$:
+;	.\src\main.c:73: array[0] = 0x00;
+	mov	r5,_setData_PARM_2
+	mov	r6,(_setData_PARM_2 + 1)
+	mov	r7,(_setData_PARM_2 + 2)
+	mov	dpl,r5
+	mov	dph,r6
+	mov	b,r7
+	clr	a
+	lcall	__gptrput
+;	.\src\main.c:74: array[1] = 0x1B;
+	inc	a
+	add	a,r5
+	mov	r2,a
+	clr	a
+	addc	a,r6
+	mov	r3,a
+	mov	ar4,r7
+	mov	dpl,r2
+	mov	dph,r3
+	mov	b,r4
+	mov	a,#0x1b
+	lcall	__gptrput
+;	.\src\main.c:75: array[2] = 0x18;
+	mov	a,#0x02
+	add	a,r5
+	mov	r5,a
+	clr	a
+	addc	a,r6
+	mov	r6,a
+	mov	dpl,r5
+	mov	dph,r6
+	mov	b,r7
+	mov	a,#0x18
+;	.\src\main.c:76: break;
+	ljmp	__gptrput
+;	.\src\main.c:77: case 5:
 00106$:
-;	.\src\main.c:82: array[0] = 0x1D;
+;	.\src\main.c:78: array[0] = 0x02;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x1d
+	mov	a,#0x02
 	lcall	__gptrput
-;	.\src\main.c:83: array[1] = 0x15;
-	mov	a,#0x01
+;	.\src\main.c:79: array[1] = 0x0A;
+	dec	a
 	add	a,r5
 	mov	r2,a
 	clr	a
@@ -607,9 +624,9 @@ _setData:
 	mov	dpl,r2
 	mov	dph,r3
 	mov	b,r4
-	mov	a,#0x15
+	mov	a,#0x0a
 	lcall	__gptrput
-;	.\src\main.c:84: array[2] = 0x17;
+;	.\src\main.c:80: array[2] = 0x08;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -619,22 +636,22 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x17
-;	.\src\main.c:85: break;
+	mov	a,#0x08
+;	.\src\main.c:81: break;
 	ljmp	__gptrput
-;	.\src\main.c:86: case 6:
+;	.\src\main.c:82: case 6:
 00107$:
-;	.\src\main.c:87: array[0] = 0x1D;
+;	.\src\main.c:83: array[0] = 0x02;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x1d
+	mov	a,#0x02
 	lcall	__gptrput
-;	.\src\main.c:88: array[1] = 0x15;
-	mov	a,#0x01
+;	.\src\main.c:84: array[1] = 0x0A;
+	dec	a
 	add	a,r5
 	mov	r2,a
 	clr	a
@@ -644,9 +661,9 @@ _setData:
 	mov	dpl,r2
 	mov	dph,r3
 	mov	b,r4
-	mov	a,#0x15
+	mov	a,#0x0a
 	lcall	__gptrput
-;	.\src\main.c:89: array[2] = 0x1F;
+;	.\src\main.c:85: array[2] = 0x00;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -656,21 +673,21 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x1f
-;	.\src\main.c:90: break;
+	clr	a
+;	.\src\main.c:86: break;
 	ljmp	__gptrput
-;	.\src\main.c:91: case 7:
+;	.\src\main.c:87: case 7:
 00108$:
-;	.\src\main.c:92: array[0] = 0x03;
+;	.\src\main.c:88: array[0] = 0x1C;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x03
+	mov	a,#0x1c
 	lcall	__gptrput
-;	.\src\main.c:93: array[1] = 0x05;
+;	.\src\main.c:89: array[1] = 0x1A;
 	mov	a,#0x01
 	add	a,r5
 	mov	r2,a
@@ -681,9 +698,9 @@ _setData:
 	mov	dpl,r2
 	mov	dph,r3
 	mov	b,r4
-	mov	a,#0x05
+	mov	a,#0x1a
 	lcall	__gptrput
-;	.\src\main.c:94: array[2] = 0x19;
+;	.\src\main.c:90: array[2] = 0x06;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -693,22 +710,22 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x19
-;	.\src\main.c:95: break;
-;	.\src\main.c:96: case 8:
+	mov	a,#0x06
+;	.\src\main.c:91: break;
+;	.\src\main.c:92: case 8:
 	ljmp	__gptrput
 00109$:
-;	.\src\main.c:97: array[0] = 0x1F;
+;	.\src\main.c:93: array[0] = 0x00;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x1f
+	clr	a
 	lcall	__gptrput
-;	.\src\main.c:98: array[1] = 0x15;
-	mov	a,#0x01
+;	.\src\main.c:94: array[1] = 0x0A;
+	inc	a
 	add	a,r5
 	mov	r2,a
 	clr	a
@@ -718,9 +735,9 @@ _setData:
 	mov	dpl,r2
 	mov	dph,r3
 	mov	b,r4
-	mov	a,#0x15
+	mov	a,#0x0a
 	lcall	__gptrput
-;	.\src\main.c:99: array[2] = 0x1F;
+;	.\src\main.c:95: array[2] = 0x00;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -730,22 +747,22 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x1f
-;	.\src\main.c:100: break;
-;	.\src\main.c:101: case 9:
+	clr	a
+;	.\src\main.c:96: break;
+;	.\src\main.c:97: case 9:
 	ljmp	__gptrput
 00110$:
-;	.\src\main.c:102: array[0] = 0x1F;
+;	.\src\main.c:98: array[0] = 0x00;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x1f
+	clr	a
 	lcall	__gptrput
-;	.\src\main.c:103: array[1] = 0x15;
-	mov	a,#0x01
+;	.\src\main.c:99: array[1] = 0x0A;
+	inc	a
 	add	a,r5
 	mov	r2,a
 	clr	a
@@ -755,9 +772,9 @@ _setData:
 	mov	dpl,r2
 	mov	dph,r3
 	mov	b,r4
-	mov	a,#0x15
+	mov	a,#0x0a
 	lcall	__gptrput
-;	.\src\main.c:104: array[2] = 0x17;
+;	.\src\main.c:100: array[2] = 0x08;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -767,55 +784,57 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x17
-;	.\src\main.c:106: }
-;	.\src\main.c:107: }
+	mov	a,#0x08
+;	.\src\main.c:102: }
+;	.\src\main.c:103: }
 	ljmp	__gptrput
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'nextColumn'
 ;------------------------------------------------------------
-;	.\src\main.c:110: void nextColumn(void){
+;	.\src\main.c:106: void nextColumn(void)
 ;	-----------------------------------------
 ;	 function nextColumn
 ;	-----------------------------------------
 _nextColumn:
-;	.\src\main.c:117: if (ptrColumn >= 0 && ptrColumn < 3)
+;	.\src\main.c:111: if (ptrColumn < 3)
 	mov	a,#0x100 - 0x03
 	add	a,_ptrColumn
 	jc	00102$
-;	.\src\main.c:118: P1 = (ptrColumn << 5) | (first[ptrColumn]);
+;	.\src\main.c:112: P1 = (ptrColumn << 5) | second[ptrColumn];
 	mov	a,_ptrColumn
 	swap	a
 	rl	a
 	anl	a,#0xe0
 	mov	r7,a
 	mov	a,_ptrColumn
-	add	a,#_first
+	add	a,#_second
 	mov	r1,a
 	mov	a,@r1
 	mov	r6,a
 	orl	a,r7
 	mov	_P1,a
 00102$:
-;	.\src\main.c:120: if (ptrColumn == 3)
+;	.\src\main.c:114: if (ptrColumn == 3)
 	mov	a,#0x03
-	cjne	a,_ptrColumn,00105$
-;	.\src\main.c:121: P1 = (ptrColumn << 5); 
+	cjne	a,_ptrColumn,00104$
+;	.\src\main.c:115: P1 = (ptrColumn << 5) | 0x1F;
 	mov	a,_ptrColumn
-	mov	r7,a
 	swap	a
 	rl	a
 	anl	a,#0xe0
+	mov	r7,a
+	mov	a,#0x1f
+	orl	a,r7
 	mov	_P1,a
-00105$:
-;	.\src\main.c:123: if (ptrColumn > 3 && ptrColumn <= 7)
+00104$:
+;	.\src\main.c:117: if (ptrColumn > 3 && ptrColumn < 7)
 	mov	a,_ptrColumn
 	add	a,#0xff - 0x03
-	jnc	00107$
-	mov	a,_ptrColumn
-	add	a,#0xff - 0x07
-	jc	00107$
-;	.\src\main.c:124: P1 = (ptrColumn << 5) | (second[ptrColumn - 4]);
+	jnc	00106$
+	mov	a,#0x100 - 0x07
+	add	a,_ptrColumn
+	jc	00106$
+;	.\src\main.c:118: P1 = (ptrColumn << 5) | first[ptrColumn - 4];
 	mov	a,_ptrColumn
 	mov	r7,a
 	swap	a
@@ -824,49 +843,51 @@ _nextColumn:
 	mov	r6,a
 	mov	a,r7
 	add	a,#0xfc
-	add	a,#_second
+	add	a,#_first
 	mov	r1,a
 	mov	a,@r1
 	mov	r7,a
 	orl	a,r6
 	mov	_P1,a
-00107$:
-;	.\src\main.c:126: ptrColumn++;
+00106$:
+;	.\src\main.c:120: ptrColumn++;
 	inc	_ptrColumn
-;	.\src\main.c:128: if (ptrColumn == countColumn)
+;	.\src\main.c:122: if (ptrColumn == countColumn)
 	mov	a,#0x07
-	cjne	a,_ptrColumn,00111$
-;	.\src\main.c:129: ptrColumn = 0;
+	cjne	a,_ptrColumn,00110$
+;	.\src\main.c:123: ptrColumn = 0;
 	mov	_ptrColumn,#0x00
-00111$:
-;	.\src\main.c:130: }
+00110$:
+;	.\src\main.c:124: }
 	ret
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'setDigits'
 ;------------------------------------------------------------
-;	.\src\main.c:134: void setDigits()
+;	.\src\main.c:128: void setDigits()
 ;	-----------------------------------------
 ;	 function setDigits
 ;	-----------------------------------------
 _setDigits:
-;	.\src\main.c:136: switch(mode)
-	clr	a
-	cjne	a,_mode,00119$
-	sjmp	00101$
-00119$:
-	mov	a,#0x01
-	cjne	a,_mode,00120$
-	sjmp	00102$
-00120$:
-	mov	a,#0x02
-	cjne	a,_mode,00121$
-	sjmp	00103$
-00121$:
+;	.\src\main.c:130: switch(mode)
+	mov	a,_mode
+	add	a,#0xff - 0x03
+	jnc	00112$
 	ret
-;	.\src\main.c:138: case 0:
+00112$:
+	mov	a,_mode
+	mov	b,#0x03
+	mul	ab
+	mov	dptr,#00113$
+	jmp	@a+dptr
+00113$:
+	ljmp	00101$
+	ljmp	00102$
+	ljmp	00103$
+	ljmp	00104$
+;	.\src\main.c:132: case 0:		
 00101$:
-;	.\src\main.c:139: setData(timeSec/10, &second[0]);
-	mov	r6,_timeSec
+;	.\src\main.c:133: setData(time10ms/10, &first[0]);	
+	mov	r6,_time10ms
 	mov	r7,#0x00
 	mov	__divsint_PARM_2,#0x0a
 ;	1-genFromRTrack replaced	mov	(__divsint_PARM_2 + 1),#0x00
@@ -874,12 +895,12 @@ _setDigits:
 	mov	dpl,r6
 	mov	dph,r7
 	lcall	__divsint
-	mov	_setData_PARM_2,#_second
+	mov	_setData_PARM_2,#_first
 	mov	(_setData_PARM_2 + 1),#0x00
 	mov	(_setData_PARM_2 + 2),#0x40
 	lcall	_setData
-;	.\src\main.c:140: setData(timeSec%10, &first[0]);
-	mov	r6,_timeSec
+;	.\src\main.c:134: setData(time10ms%10, &second[0]);
+	mov	r6,_time10ms
 	mov	r7,#0x00
 	mov	__modsint_PARM_2,#0x0a
 ;	1-genFromRTrack replaced	mov	(__modsint_PARM_2 + 1),#0x00
@@ -887,15 +908,15 @@ _setDigits:
 	mov	dpl,r6
 	mov	dph,r7
 	lcall	__modsint
-	mov	_setData_PARM_2,#_first
+	mov	_setData_PARM_2,#_second
 	mov	(_setData_PARM_2 + 1),#0x00
 	mov	(_setData_PARM_2 + 2),#0x40
-;	.\src\main.c:141: break;
+;	.\src\main.c:135: break;
 	ljmp	_setData
-;	.\src\main.c:142: case 1:
+;	.\src\main.c:136: case 1:
 00102$:
-;	.\src\main.c:143: setData(timeMin/10, &second[0]);
-	mov	r6,_timeMin
+;	.\src\main.c:137: setData(timeSec/10, &first[0]);
+	mov	r6,_timeSec
 	mov	r7,#0x00
 	mov	__divsint_PARM_2,#0x0a
 ;	1-genFromRTrack replaced	mov	(__divsint_PARM_2 + 1),#0x00
@@ -903,12 +924,12 @@ _setDigits:
 	mov	dpl,r6
 	mov	dph,r7
 	lcall	__divsint
-	mov	_setData_PARM_2,#_second
+	mov	_setData_PARM_2,#_first
 	mov	(_setData_PARM_2 + 1),#0x00
 	mov	(_setData_PARM_2 + 2),#0x40
 	lcall	_setData
-;	.\src\main.c:144: setData(timeMin%10, &first[0]);
-	mov	r6,_timeMin
+;	.\src\main.c:138: setData(timeSec%10, &second[0]);
+	mov	r6,_timeSec
 	mov	r7,#0x00
 	mov	__modsint_PARM_2,#0x0a
 ;	1-genFromRTrack replaced	mov	(__modsint_PARM_2 + 1),#0x00
@@ -916,14 +937,43 @@ _setDigits:
 	mov	dpl,r6
 	mov	dph,r7
 	lcall	__modsint
-	mov	_setData_PARM_2,#_first
+	mov	_setData_PARM_2,#_second
 	mov	(_setData_PARM_2 + 1),#0x00
 	mov	(_setData_PARM_2 + 2),#0x40
-;	.\src\main.c:145: break;
-;	.\src\main.c:146: case 2:
+;	.\src\main.c:139: break;
 	ljmp	_setData
+;	.\src\main.c:140: case 2:
 00103$:
-;	.\src\main.c:147: setData(timeHour/10, &second[0]);
+;	.\src\main.c:141: setData(timeMin/10, &first[0]);
+	mov	r6,_timeMin
+	mov	r7,#0x00
+	mov	__divsint_PARM_2,#0x0a
+;	1-genFromRTrack replaced	mov	(__divsint_PARM_2 + 1),#0x00
+	mov	(__divsint_PARM_2 + 1),r7
+	mov	dpl,r6
+	mov	dph,r7
+	lcall	__divsint
+	mov	_setData_PARM_2,#_first
+	mov	(_setData_PARM_2 + 1),#0x00
+	mov	(_setData_PARM_2 + 2),#0x40
+	lcall	_setData
+;	.\src\main.c:142: setData(timeMin%10, &second[0]);
+	mov	r6,_timeMin
+	mov	r7,#0x00
+	mov	__modsint_PARM_2,#0x0a
+;	1-genFromRTrack replaced	mov	(__modsint_PARM_2 + 1),#0x00
+	mov	(__modsint_PARM_2 + 1),r7
+	mov	dpl,r6
+	mov	dph,r7
+	lcall	__modsint
+	mov	_setData_PARM_2,#_second
+	mov	(_setData_PARM_2 + 1),#0x00
+	mov	(_setData_PARM_2 + 2),#0x40
+;	.\src\main.c:143: break;
+;	.\src\main.c:144: case 3:
+	ljmp	_setData
+00104$:
+;	.\src\main.c:145: setData(timeHour/10, &first[0]);
 	mov	r6,_timeHour
 	mov	r7,#0x00
 	mov	__divsint_PARM_2,#0x0a
@@ -932,11 +982,11 @@ _setDigits:
 	mov	dpl,r6
 	mov	dph,r7
 	lcall	__divsint
-	mov	_setData_PARM_2,#_second
+	mov	_setData_PARM_2,#_first
 	mov	(_setData_PARM_2 + 1),#0x00
 	mov	(_setData_PARM_2 + 2),#0x40
 	lcall	_setData
-;	.\src\main.c:148: setData(timeHour%10, &first[0]);
+;	.\src\main.c:146: setData(timeHour%10, &second[0]);			
 	mov	r6,_timeHour
 	mov	r7,#0x00
 	mov	__modsint_PARM_2,#0x0a
@@ -945,84 +995,140 @@ _setDigits:
 	mov	dpl,r6
 	mov	dph,r7
 	lcall	__modsint
-	mov	_setData_PARM_2,#_first
+	mov	_setData_PARM_2,#_second
 	mov	(_setData_PARM_2 + 1),#0x00
 	mov	(_setData_PARM_2 + 2),#0x40
-;	.\src\main.c:150: }
-;	.\src\main.c:151: }
+;	.\src\main.c:148: }
+;	.\src\main.c:149: }
 	ljmp	_setData
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'T0init'
 ;------------------------------------------------------------
-;	.\src\main.c:154: void T0init(void)
+;	.\src\main.c:152: void T0init(void)
 ;	-----------------------------------------
 ;	 function T0init
 ;	-----------------------------------------
 _T0init:
-;	.\src\main.c:156: TR0=0;
+;	.\src\main.c:154: TR0=0;
 ;	assignBit
 	clr	_TR0
-;	.\src\main.c:157: TMOD=(TMOD&0xf0)|0x1;
+;	.\src\main.c:155: TMOD=(TMOD&0xf0)|0x1;
 	mov	a,_TMOD
 	anl	a,#0xf0
 	orl	a,#0x01
 	mov	_TMOD,a
-;	.\src\main.c:158: TL0=(~tik);
+;	.\src\main.c:156: TL0=(~tik);
 	mov	_TL0,#0xef
-;	.\src\main.c:159: TH0=(~tik)>>8;
+;	.\src\main.c:157: TH0=(~tik)>>8;
 	mov	_TH0,#0xd8
-;	.\src\main.c:160: TR0=1;
+;	.\src\main.c:158: TR0=1;
 ;	assignBit
 	setb	_TR0
-;	.\src\main.c:161: ET0=1; 
+;	.\src\main.c:159: ET0=1; 
 ;	assignBit
 	setb	_ET0
-;	.\src\main.c:162: EA=1;
+;	.\src\main.c:160: EA=1;
 ;	assignBit
 	setb	_EA
-;	.\src\main.c:163: }
+;	.\src\main.c:161: }
 	ret
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'T0_int'
 ;------------------------------------------------------------
-;	.\src\main.c:166: void T0_int (void) __interrupt (TF0_VECTOR)
+;	.\src\main.c:164: void T0_int (void) __interrupt (TF0_VECTOR)
 ;	-----------------------------------------
 ;	 function T0_int
 ;	-----------------------------------------
 _T0_int:
-;	.\src\main.c:169: TR0=0;
+	push	bits
+	push	acc
+	push	b
+	push	dpl
+	push	dph
+	push	(0+7)
+	push	(0+6)
+	push	(0+5)
+	push	(0+4)
+	push	(0+3)
+	push	(0+2)
+	push	(0+1)
+	push	(0+0)
+	push	psw
+	mov	psw,#0x00
+;	.\src\main.c:166: TR0=0;
 ;	assignBit
 	clr	_TR0
-;	.\src\main.c:170: TL0=(~tik);
+;	.\src\main.c:167: TL0=(~tik);
 	mov	_TL0,#0xef
-;	.\src\main.c:171: TH0=(~tik)>>8;
+;	.\src\main.c:168: TH0=(~tik)>>8;
 	mov	_TH0,#0xd8
-;	.\src\main.c:172: TR0=1;
+;	.\src\main.c:169: TR0=1;
 ;	assignBit
 	setb	_TR0
-;	.\src\main.c:173: count10ms++;
-	inc	_count10ms
-;	.\src\main.c:174: }
+;	.\src\main.c:170: if (started) 
+	mov	a,_started
+	jz	00111$
+;	.\src\main.c:172: time10ms++;
+	inc	_time10ms
+;	.\src\main.c:173: if (time10ms == 100) 
+	mov	a,#0x64
+	cjne	a,_time10ms,00108$
+;	.\src\main.c:175: time10ms = 0;
+	mov	_time10ms,#0x00
+;	.\src\main.c:176: timeSec++;
+	inc	_timeSec
+;	.\src\main.c:177: if (timeSec == 60) 
+	mov	a,#0x3c
+	cjne	a,_timeSec,00108$
+;	.\src\main.c:179: timeSec = 0;
+	mov	_timeSec,#0x00
+;	.\src\main.c:180: timeMin++;
+	inc	_timeMin
+;	.\src\main.c:181: if (timeMin == 60) 
+	mov	a,#0x3c
+	cjne	a,_timeMin,00108$
+;	.\src\main.c:183: timeMin = 0;
+	mov	_timeMin,#0x00
+;	.\src\main.c:184: timeHour++;
+	inc	_timeHour
+;	.\src\main.c:185: if (timeHour == 24)
+	mov	a,#0x18
+	cjne	a,_timeHour,00108$
+;	.\src\main.c:186: timeHour = 0;
+	mov	_timeHour,#0x00
+00108$:
+;	.\src\main.c:190: setDigits();
+	lcall	_setDigits
+00111$:
+;	.\src\main.c:192: }
+	pop	psw
+	pop	(0+0)
+	pop	(0+1)
+	pop	(0+2)
+	pop	(0+3)
+	pop	(0+4)
+	pop	(0+5)
+	pop	(0+6)
+	pop	(0+7)
+	pop	dph
+	pop	dpl
+	pop	b
+	pop	acc
+	pop	bits
 	reti
-;	eliminated unneeded mov psw,# (no regs used in bank)
-;	eliminated unneeded push/pop not_psw
-;	eliminated unneeded push/pop dpl
-;	eliminated unneeded push/pop dph
-;	eliminated unneeded push/pop b
-;	eliminated unneeded push/pop acc
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'delayFOR'
 ;------------------------------------------------------------
 ;kodF                      Allocated to registers r7 
 ;ml                        Allocated to registers r6 
 ;------------------------------------------------------------
-;	.\src\main.c:177: void delayFOR(unsigned char kodF)
+;	.\src\main.c:195: void delayFOR(unsigned char kodF)
 ;	-----------------------------------------
 ;	 function delayFOR
 ;	-----------------------------------------
 _delayFOR:
 	mov	r7,dpl
-;	.\src\main.c:180: for(ml = 0; ml < kodF; ml++){}
+;	.\src\main.c:198: for(ml = 0; ml < kodF; ml++){}
 	mov	r6,#0x00
 00103$:
 	clr	c
@@ -1032,163 +1138,128 @@ _delayFOR:
 	inc	r6
 	sjmp	00103$
 00105$:
-;	.\src\main.c:181: }
+;	.\src\main.c:199: }
 	ret
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'DelayMS'
 ;------------------------------------------------------------
 ;KodMS                     Allocated to registers 
 ;------------------------------------------------------------
-;	.\src\main.c:184: void DelayMS(unsigned char KodMS)
+;	.\src\main.c:202: void DelayMS(unsigned char KodMS)
 ;	-----------------------------------------
 ;	 function DelayMS
 ;	-----------------------------------------
 _DelayMS:
 	mov	r7,dpl
-;	.\src\main.c:186: do delay1ms;
+;	.\src\main.c:204: do delay1ms;
 00101$:
 	mov	dpl,#0x63
 	push	ar7
 	lcall	_delayFOR
 	pop	ar7
-;	.\src\main.c:187: while(--KodMS);
+;	.\src\main.c:205: while(--KodMS);
 	djnz	r7,00101$
-;	.\src\main.c:188: }
+;	.\src\main.c:206: }
 	ret
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'buttonsCheck'
 ;------------------------------------------------------------
-;	.\src\main.c:191: void buttonsCheck(void)
+;	.\src\main.c:209: void buttonsCheck(void)
 ;	-----------------------------------------
 ;	 function buttonsCheck
 ;	-----------------------------------------
 _buttonsCheck:
-;	.\src\main.c:194: if (!P3_0)
-	jb	_P3_0,00107$
-;	.\src\main.c:197: P1 = 0x1F;
+;	.\src\main.c:212: if (!P3_2) 
+	jb	_P3_2,00108$
+;	.\src\main.c:215: P1 = 0x1F;
 	mov	_P1,#0x1f
-;	.\src\main.c:199: DelayMS(10);
+;	.\src\main.c:217: DelayMS(10);
 	mov	dpl,#0x0a
 	lcall	_DelayMS
-;	.\src\main.c:201: while(!P3_0);
+;	.\src\main.c:219: while(!P3_2);
 00101$:
-	jnb	_P3_0,00101$
-;	.\src\main.c:203: DelayMS(10);
+	jnb	_P3_2,00101$
+;	.\src\main.c:221: DelayMS(10);
 	mov	dpl,#0x0a
 	lcall	_DelayMS
-;	.\src\main.c:205: mode++;
-	inc	_mode
-;	.\src\main.c:206: if (mode == 3)
-	mov	a,#0x03
-	cjne	a,_mode,00105$
-;	.\src\main.c:207: mode = 0;
-	mov	_mode,#0x00
-00105$:
-;	.\src\main.c:209: setDigits();
-	lcall	_setDigits
-00107$:
-;	.\src\main.c:212: if (!P3_1)
-	jb	_P3_1,00109$
-;	.\src\main.c:215: DelayMS(10);
-	mov	dpl,#0x0a
-	lcall	_DelayMS
-;	.\src\main.c:216: count10ms=0;
-	mov	_count10ms,#0x00
-;	.\src\main.c:218: timeSec = 0;
-	mov	_timeSec,#0x00
-;	.\src\main.c:220: timeMin = 0;
-	mov	_timeMin,#0x00
-;	.\src\main.c:222: timeHour = 0;
-	mov	_timeHour,#0x00
-;	.\src\main.c:223: DelayMS(10);
-	mov	dpl,#0x0a
-	lcall	_DelayMS
-;	.\src\main.c:224: setDigits();
-	lcall	_setDigits
-00109$:
-;	.\src\main.c:227: if (!P3_2)
-	jb	_P3_2,00118$
-;	.\src\main.c:230: P1 = 0x1F;
-	mov	_P1,#0x1f
-;	.\src\main.c:232: DelayMS(10);
-	mov	dpl,#0x0a
-	lcall	_DelayMS
-;	.\src\main.c:234: while(!P3_2);
-00110$:
-	jnb	_P3_2,00110$
-;	.\src\main.c:236: DelayMS(10);
-	mov	dpl,#0x0a
-	lcall	_DelayMS
-;	.\src\main.c:237: if (started) {
+;	.\src\main.c:223: if (started)
 	mov	a,_started
-	jz	00114$
-;	.\src\main.c:238: started = 0;
+	jz	00105$
+;	.\src\main.c:225: started = 0;
 	mov	_started,#0x00
-	ret
-00114$:
-;	.\src\main.c:240: started = 1;
+	sjmp	00108$
+00105$:
+;	.\src\main.c:228: started = 1;
 	mov	_started,#0x01
+00108$:
+;	.\src\main.c:232: if (!P3_3) 
+	jb	_P3_3,00115$
+;	.\src\main.c:235: P1 = 0x1F;
+	mov	_P1,#0x1f
+;	.\src\main.c:237: DelayMS(10);
+	mov	dpl,#0x0a
+	lcall	_DelayMS
+;	.\src\main.c:239: while(!P3_3);
+00109$:
+	jnb	_P3_3,00109$
+;	.\src\main.c:241: DelayMS(10);
+	mov	dpl,#0x0a
+	lcall	_DelayMS
+;	.\src\main.c:243: mode++;
+	inc	_mode
+;	.\src\main.c:244: if (mode == 4)
+	mov	a,#0x04
+	cjne	a,_mode,00113$
+;	.\src\main.c:245: mode = 0;
+	mov	_mode,#0x00
+00113$:
+;	.\src\main.c:247: setDigits();
+	lcall	_setDigits
+00115$:
+;	.\src\main.c:250: if (!P3_4)
+	jb	_P3_4,00118$
+;	.\src\main.c:253: DelayMS(10);
+	mov	dpl,#0x0a
+	lcall	_DelayMS
+;	.\src\main.c:254: time10ms=0;
+	mov	_time10ms,#0x00
+;	.\src\main.c:256: timeSec = 0;
+	mov	_timeSec,#0x00
+;	.\src\main.c:258: timeMin = 0;
+	mov	_timeMin,#0x00
+;	.\src\main.c:260: timeHour = 0;
+	mov	_timeHour,#0x00
+;	.\src\main.c:261: DelayMS(10);
+	mov	dpl,#0x0a
+	lcall	_DelayMS
+;	.\src\main.c:262: setDigits();
+;	.\src\main.c:264: }
+	ljmp	_setDigits
 00118$:
-;	.\src\main.c:243: }
 	ret
 ;------------------------------------------------------------
 ;Allocation info for local variables in function 'main'
 ;------------------------------------------------------------
-;	.\src\main.c:245: void main(void)
+;	.\src\main.c:266: void main(void){
 ;	-----------------------------------------
 ;	 function main
 ;	-----------------------------------------
 _main:
-;	.\src\main.c:248: T0init();
+;	.\src\main.c:268: T0init();
 	lcall	_T0init
-;	.\src\main.c:250: setDigits();
+;	.\src\main.c:270: setDigits();
 	lcall	_setDigits
-;	.\src\main.c:251: while(1)
-00112$:
-;	.\src\main.c:254: buttonsCheck();
+;	.\src\main.c:271: while(1){
+00102$:
+;	.\src\main.c:273: buttonsCheck();
 	lcall	_buttonsCheck
-;	.\src\main.c:256: DelayMS(10);
+;	.\src\main.c:275: delayFOR(10);
 	mov	dpl,#0x0a
-	lcall	_DelayMS
-;	.\src\main.c:258: nextColumn();
+	lcall	_delayFOR
+;	.\src\main.c:277: nextColumn();
 	lcall	_nextColumn
-;	.\src\main.c:261: if (started)
-	mov	a,_started
-	jz	00112$
-;	.\src\main.c:263: if (count10ms >= 100)
-	mov	a,#0x100 - 0x64
-	add	a,_count10ms
-	jnc	00112$
-;	.\src\main.c:265: count10ms -= 100;
-	mov	a,_count10ms
-	add	a,#0x9c
-	mov	_count10ms,a
-;	.\src\main.c:266: timeSec++;
-	inc	_timeSec
-;	.\src\main.c:267: if (timeSec == 61)
-	mov	a,#0x3d
-	cjne	a,_timeSec,00106$
-;	.\src\main.c:269: timeSec = 0;
-	mov	_timeSec,#0x00
-;	.\src\main.c:270: timeMin++;
-	inc	_timeMin
-;	.\src\main.c:271: if (timeMin == 61)
-	mov	a,#0x3d
-	cjne	a,_timeMin,00106$
-;	.\src\main.c:273: timeMin = 0;
-	mov	_timeMin,#0x00
-;	.\src\main.c:274: timeHour++;
-	inc	_timeHour
-;	.\src\main.c:275: if (timeHour == 24)
-	mov	a,#0x18
-	cjne	a,_timeHour,00106$
-;	.\src\main.c:276: timeHour = 0;
-	mov	_timeHour,#0x00
-00106$:
-;	.\src\main.c:279: setDigits();
-	lcall	_setDigits
-;	.\src\main.c:284: }
-	sjmp	00112$
+;	.\src\main.c:279: }
+	sjmp	00102$
 	.area CSEG    (CODE)
 	.area CONST   (CODE)
 	.area XINIT   (CODE)
