@@ -1,5 +1,5 @@
 //Подключаем библиотеку
-#include<at89x51.h>
+#include<8051.h>
 
 //Тик таймера
 #define tik (10000)
@@ -55,39 +55,39 @@ void setData(unsigned char digit, unsigned char *array)
 			//Повернуть по часовой стрелке; "*" - светодиод горит, "-" - светодиод не горит
 			break;
 		case 1:
-			array[0] = 0x00;
+			array[0] = 0x1B;
 			array[1] = 0x1D;
-			array[2] = 0x1B;
+			array[2] = 0x00;
 			break;
 		case 2:
-			array[0] = 0x08;
-			array[1] = 0x0A;
-			array[2] = 0x04;
-			break;
-		case 3:
-			array[0] = 0x00;
-			array[1] = 0x0A;
-			array[2] = 0x0A;
-			break;
-		case 4:
-			array[0] = 0x00;
-			array[1] = 0x1B;
-			array[2] = 0x18;
-			break;
-		case 5:
-			array[0] = 0x02;
+			array[0] = 0x04;
 			array[1] = 0x0A;
 			array[2] = 0x08;
 			break;
-		case 6:
-			array[0] = 0x02;
+		case 3:
+			array[0] = 0x0A;
 			array[1] = 0x0A;
 			array[2] = 0x00;
 			break;
+		case 4:
+			array[0] = 0x18;
+			array[1] = 0x1B;
+			array[2] = 0x00;
+			break;
+		case 5:
+			array[0] = 0x08;
+			array[1] = 0x0A;
+			array[2] = 0x02;
+			break;
+		case 6:
+			array[0] = 0x00;
+			array[1] = 0x0A;
+			array[2] = 0x02;
+			break;
 		case 7:
-			array[0] = 0x1C;
+			array[0] = 0x06;
 			array[1] = 0x1A;
-			array[2] = 0x06;
+			array[2] = 0x1C;
 			break;
 		case 8:
 			array[0] = 0x00;
@@ -95,9 +95,9 @@ void setData(unsigned char digit, unsigned char *array)
 			array[2] = 0x00;
 			break;
 		case 9:
-			array[0] = 0x00;
+			array[0] = 0x08;
 			array[1] = 0x0A;
-			array[2] = 0x08;
+			array[2] = 0x00;
 			break;
 	}
 }
@@ -109,13 +109,13 @@ void nextColumn(void)
 	//Они подаются на дешифратор, который выдает значения из множества {0,1,2,3,4,5,6} (Последние три ножки дешифратора не используются)
 	//Исходя из сказанного, в P1 нужно записать указатель на столбец смещенный на 5 битов влево побитно сложенный со значением из массива, хранящего цифру, по указателю 
 	if (ptrColumn < 3)
-		P1 = (ptrColumn << 5) | second[ptrColumn];
+		P1 = (ptrColumn << 5) | first[ptrColumn];
 	//Если промежуток, то ничего не выводим
 	if (ptrColumn == 3)
 		P1 = (ptrColumn << 5) | 0x1F;
 	//Если 2 цифра, то берем из массива second
 	if (ptrColumn > 3 && ptrColumn < 7)
-		P1 = (ptrColumn << 5) | first[ptrColumn - 4];
+		P1 = (ptrColumn << 5) | second[ptrColumn - 4];
 	//Переходим к следующему столбцу
 	ptrColumn++;
 	//Если столбец был последним, то переходим опять к первому
@@ -209,14 +209,14 @@ void DelayMS(unsigned char KodMS)
 void buttonsCheck(void)
 {
 	//Пауза и старт секундомера
-	if (!P3_2) 
+	if (!P3_0) 
 	{
 		//Выключаем матрицу
 		P1 = 0x1F;
 		//Игнорируем дребезг
 		DelayMS(10);
 		//Ждем отпускания
-		while(!P3_2);
+		while(!P3_0);
 		//Игнорируем дребезг
 		DelayMS(10);
 		//Запускаем или останавливаем секундомер
@@ -229,14 +229,14 @@ void buttonsCheck(void)
 		}
 	}
 	//Переключение режимов
-	if (!P3_3) 
+	if (!P3_1) 
 	{
 		//Выключаем матрицу
 		P1 = 0x1F;
 		//Игнорируем дребезг
 		DelayMS(10);
 		//Ждем отпускания
-		while(!P3_3);
+		while(!P3_1);
 		//Игнорируем дребезг
 		DelayMS(10);
 		//Меняем режим
@@ -247,7 +247,7 @@ void buttonsCheck(void)
 		setDigits();
 	}
 	//Сброс секундомера
-	if (!P3_4)
+	if (!P3_2)
 	{
 		//Сброс значений
 		DelayMS(10);

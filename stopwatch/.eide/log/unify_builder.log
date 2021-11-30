@@ -304,3 +304,21 @@
 [2021-11-26 17:31:49]	[done]
 	build successfully !
 
+[2021-11-29 20:26:01]	compilation failed at : "e:\MEI\3_cource\kyrsovoi-5semestr\stopwatch\src\main.c", exit code: 1
+  at unify_builder.Program.Main (System.String[] args) [0x0116f] in <881485cd164b4f5a918f957d29d55652>:0 
+
+[2021-11-29 20:26:19]	[done]
+	build successfully !
+
+[2021-11-30 08:03:23]	[done]
+	build successfully !
+
+[2021-11-30 08:37:08]	[done]
+	build successfully !
+
+[2021-11-30 08:41:52]	[done]
+	build successfully !
+
+[2021-11-30 09:10:49]	[done]
+	build successfully !
+

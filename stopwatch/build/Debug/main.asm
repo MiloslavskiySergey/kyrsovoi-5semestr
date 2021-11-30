@@ -24,7 +24,7 @@
 	.globl _RS1
 	.globl _RS0
 	.globl _OV
-	.globl _FL
+	.globl _F1
 	.globl _P
 	.globl _PS
 	.globl _PT1
@@ -94,7 +94,6 @@
 	.globl _P0_1
 	.globl _P0_0
 	.globl _B
-	.globl _A
 	.globl _ACC
 	.globl _PSW
 	.globl _IP
@@ -149,7 +148,6 @@ _P3	=	0x00b0
 _IP	=	0x00b8
 _PSW	=	0x00d0
 _ACC	=	0x00e0
-_A	=	0x00e0
 _B	=	0x00f0
 ;--------------------------------------------------------
 ; special function bits
@@ -224,7 +222,7 @@ _PX1	=	0x00ba
 _PT1	=	0x00bb
 _PS	=	0x00bc
 _P	=	0x00d0
-_FL	=	0x00d1
+_F1	=	0x00d1
 _OV	=	0x00d2
 _RS0	=	0x00d3
 _RS1	=	0x00d4
@@ -456,17 +454,17 @@ _setData:
 	ljmp	__gptrput
 ;	.\src\main.c:57: case 1:
 00102$:
-;	.\src\main.c:58: array[0] = 0x00;
+;	.\src\main.c:58: array[0] = 0x1B;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	clr	a
+	mov	a,#0x1b
 	lcall	__gptrput
 ;	.\src\main.c:59: array[1] = 0x1D;
-	inc	a
+	mov	a,#0x01
 	add	a,r5
 	mov	r2,a
 	clr	a
@@ -478,7 +476,7 @@ _setData:
 	mov	b,r4
 	mov	a,#0x1d
 	lcall	__gptrput
-;	.\src\main.c:60: array[2] = 0x1B;
+;	.\src\main.c:60: array[2] = 0x00;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -488,19 +486,19 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x1b
+	clr	a
 ;	.\src\main.c:61: break;
 	ljmp	__gptrput
 ;	.\src\main.c:62: case 2:
 00103$:
-;	.\src\main.c:63: array[0] = 0x08;
+;	.\src\main.c:63: array[0] = 0x04;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x08
+	mov	a,#0x04
 	lcall	__gptrput
 ;	.\src\main.c:64: array[1] = 0x0A;
 	mov	a,#0x01
@@ -515,7 +513,7 @@ _setData:
 	mov	b,r4
 	mov	a,#0x0a
 	lcall	__gptrput
-;	.\src\main.c:65: array[2] = 0x04;
+;	.\src\main.c:65: array[2] = 0x08;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -525,22 +523,22 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x04
+	mov	a,#0x08
 ;	.\src\main.c:66: break;
 	ljmp	__gptrput
 ;	.\src\main.c:67: case 3:
 00104$:
-;	.\src\main.c:68: array[0] = 0x00;
+;	.\src\main.c:68: array[0] = 0x0A;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	clr	a
+	mov	a,#0x0a
 	lcall	__gptrput
 ;	.\src\main.c:69: array[1] = 0x0A;
-	inc	a
+	mov	a,#0x01
 	add	a,r5
 	mov	r2,a
 	clr	a
@@ -552,7 +550,7 @@ _setData:
 	mov	b,r4
 	mov	a,#0x0a
 	lcall	__gptrput
-;	.\src\main.c:70: array[2] = 0x0A;
+;	.\src\main.c:70: array[2] = 0x00;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -562,22 +560,22 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x0a
+	clr	a
 ;	.\src\main.c:71: break;
 	ljmp	__gptrput
 ;	.\src\main.c:72: case 4:
 00105$:
-;	.\src\main.c:73: array[0] = 0x00;
+;	.\src\main.c:73: array[0] = 0x18;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	clr	a
+	mov	a,#0x18
 	lcall	__gptrput
 ;	.\src\main.c:74: array[1] = 0x1B;
-	inc	a
+	mov	a,#0x01
 	add	a,r5
 	mov	r2,a
 	clr	a
@@ -589,7 +587,7 @@ _setData:
 	mov	b,r4
 	mov	a,#0x1b
 	lcall	__gptrput
-;	.\src\main.c:75: array[2] = 0x18;
+;	.\src\main.c:75: array[2] = 0x00;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -599,59 +597,22 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x18
+	clr	a
 ;	.\src\main.c:76: break;
 	ljmp	__gptrput
 ;	.\src\main.c:77: case 5:
 00106$:
-;	.\src\main.c:78: array[0] = 0x02;
+;	.\src\main.c:78: array[0] = 0x08;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
-	mov	dpl,r5
-	mov	dph,r6
-	mov	b,r7
-	mov	a,#0x02
-	lcall	__gptrput
-;	.\src\main.c:79: array[1] = 0x0A;
-	dec	a
-	add	a,r5
-	mov	r2,a
-	clr	a
-	addc	a,r6
-	mov	r3,a
-	mov	ar4,r7
-	mov	dpl,r2
-	mov	dph,r3
-	mov	b,r4
-	mov	a,#0x0a
-	lcall	__gptrput
-;	.\src\main.c:80: array[2] = 0x08;
-	mov	a,#0x02
-	add	a,r5
-	mov	r5,a
-	clr	a
-	addc	a,r6
-	mov	r6,a
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
 	mov	a,#0x08
-;	.\src\main.c:81: break;
-	ljmp	__gptrput
-;	.\src\main.c:82: case 6:
-00107$:
-;	.\src\main.c:83: array[0] = 0x02;
-	mov	r5,_setData_PARM_2
-	mov	r6,(_setData_PARM_2 + 1)
-	mov	r7,(_setData_PARM_2 + 2)
-	mov	dpl,r5
-	mov	dph,r6
-	mov	b,r7
-	mov	a,#0x02
 	lcall	__gptrput
-;	.\src\main.c:84: array[1] = 0x0A;
-	dec	a
+;	.\src\main.c:79: array[1] = 0x0A;
+	mov	a,#0x01
 	add	a,r5
 	mov	r2,a
 	clr	a
@@ -663,7 +624,7 @@ _setData:
 	mov	b,r4
 	mov	a,#0x0a
 	lcall	__gptrput
-;	.\src\main.c:85: array[2] = 0x00;
+;	.\src\main.c:80: array[2] = 0x02;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -673,19 +634,56 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	clr	a
-;	.\src\main.c:86: break;
+	mov	a,#0x02
+;	.\src\main.c:81: break;
 	ljmp	__gptrput
-;	.\src\main.c:87: case 7:
-00108$:
-;	.\src\main.c:88: array[0] = 0x1C;
+;	.\src\main.c:82: case 6:
+00107$:
+;	.\src\main.c:83: array[0] = 0x00;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x1c
+	clr	a
+	lcall	__gptrput
+;	.\src\main.c:84: array[1] = 0x0A;
+	inc	a
+	add	a,r5
+	mov	r2,a
+	clr	a
+	addc	a,r6
+	mov	r3,a
+	mov	ar4,r7
+	mov	dpl,r2
+	mov	dph,r3
+	mov	b,r4
+	mov	a,#0x0a
+	lcall	__gptrput
+;	.\src\main.c:85: array[2] = 0x02;
+	mov	a,#0x02
+	add	a,r5
+	mov	r5,a
+	clr	a
+	addc	a,r6
+	mov	r6,a
+	mov	dpl,r5
+	mov	dph,r6
+	mov	b,r7
+	mov	a,#0x02
+;	.\src\main.c:86: break;
+	ljmp	__gptrput
+;	.\src\main.c:87: case 7:
+00108$:
+;	.\src\main.c:88: array[0] = 0x06;
+	mov	r5,_setData_PARM_2
+	mov	r6,(_setData_PARM_2 + 1)
+	mov	r7,(_setData_PARM_2 + 2)
+	mov	dpl,r5
+	mov	dph,r6
+	mov	b,r7
+	mov	a,#0x06
 	lcall	__gptrput
 ;	.\src\main.c:89: array[1] = 0x1A;
 	mov	a,#0x01
@@ -700,7 +698,7 @@ _setData:
 	mov	b,r4
 	mov	a,#0x1a
 	lcall	__gptrput
-;	.\src\main.c:90: array[2] = 0x06;
+;	.\src\main.c:90: array[2] = 0x1C;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -710,7 +708,7 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x06
+	mov	a,#0x1c
 ;	.\src\main.c:91: break;
 ;	.\src\main.c:92: case 8:
 	ljmp	__gptrput
@@ -752,17 +750,17 @@ _setData:
 ;	.\src\main.c:97: case 9:
 	ljmp	__gptrput
 00110$:
-;	.\src\main.c:98: array[0] = 0x00;
+;	.\src\main.c:98: array[0] = 0x08;
 	mov	r5,_setData_PARM_2
 	mov	r6,(_setData_PARM_2 + 1)
 	mov	r7,(_setData_PARM_2 + 2)
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	clr	a
+	mov	a,#0x08
 	lcall	__gptrput
 ;	.\src\main.c:99: array[1] = 0x0A;
-	inc	a
+	mov	a,#0x01
 	add	a,r5
 	mov	r2,a
 	clr	a
@@ -774,7 +772,7 @@ _setData:
 	mov	b,r4
 	mov	a,#0x0a
 	lcall	__gptrput
-;	.\src\main.c:100: array[2] = 0x08;
+;	.\src\main.c:100: array[2] = 0x00;
 	mov	a,#0x02
 	add	a,r5
 	mov	r5,a
@@ -784,7 +782,7 @@ _setData:
 	mov	dpl,r5
 	mov	dph,r6
 	mov	b,r7
-	mov	a,#0x08
+	clr	a
 ;	.\src\main.c:102: }
 ;	.\src\main.c:103: }
 	ljmp	__gptrput
@@ -800,14 +798,14 @@ _nextColumn:
 	mov	a,#0x100 - 0x03
 	add	a,_ptrColumn
 	jc	00102$
-;	.\src\main.c:112: P1 = (ptrColumn << 5) | second[ptrColumn];
+;	.\src\main.c:112: P1 = (ptrColumn << 5) | first[ptrColumn];
 	mov	a,_ptrColumn
 	swap	a
 	rl	a
 	anl	a,#0xe0
 	mov	r7,a
 	mov	a,_ptrColumn
-	add	a,#_second
+	add	a,#_first
 	mov	r1,a
 	mov	a,@r1
 	mov	r6,a
@@ -834,7 +832,7 @@ _nextColumn:
 	mov	a,#0x100 - 0x07
 	add	a,_ptrColumn
 	jc	00106$
-;	.\src\main.c:118: P1 = (ptrColumn << 5) | first[ptrColumn - 4];
+;	.\src\main.c:118: P1 = (ptrColumn << 5) | second[ptrColumn - 4];
 	mov	a,_ptrColumn
 	mov	r7,a
 	swap	a
@@ -843,7 +841,7 @@ _nextColumn:
 	mov	r6,a
 	mov	a,r7
 	add	a,#0xfc
-	add	a,#_first
+	add	a,#_second
 	mov	r1,a
 	mov	a,@r1
 	mov	r7,a
@@ -1169,16 +1167,16 @@ _DelayMS:
 ;	 function buttonsCheck
 ;	-----------------------------------------
 _buttonsCheck:
-;	.\src\main.c:212: if (!P3_2) 
-	jb	_P3_2,00108$
+;	.\src\main.c:212: if (!P3_0) 
+	jb	_P3_0,00108$
 ;	.\src\main.c:215: P1 = 0x1F;
 	mov	_P1,#0x1f
 ;	.\src\main.c:217: DelayMS(10);
 	mov	dpl,#0x0a
 	lcall	_DelayMS
-;	.\src\main.c:219: while(!P3_2);
+;	.\src\main.c:219: while(!P3_0);
 00101$:
-	jnb	_P3_2,00101$
+	jnb	_P3_0,00101$
 ;	.\src\main.c:221: DelayMS(10);
 	mov	dpl,#0x0a
 	lcall	_DelayMS
@@ -1192,16 +1190,16 @@ _buttonsCheck:
 ;	.\src\main.c:228: started = 1;
 	mov	_started,#0x01
 00108$:
-;	.\src\main.c:232: if (!P3_3) 
-	jb	_P3_3,00115$
+;	.\src\main.c:232: if (!P3_1) 
+	jb	_P3_1,00115$
 ;	.\src\main.c:235: P1 = 0x1F;
 	mov	_P1,#0x1f
 ;	.\src\main.c:237: DelayMS(10);
 	mov	dpl,#0x0a
 	lcall	_DelayMS
-;	.\src\main.c:239: while(!P3_3);
+;	.\src\main.c:239: while(!P3_1);
 00109$:
-	jnb	_P3_3,00109$
+	jnb	_P3_1,00109$
 ;	.\src\main.c:241: DelayMS(10);
 	mov	dpl,#0x0a
 	lcall	_DelayMS
@@ -1216,8 +1214,8 @@ _buttonsCheck:
 ;	.\src\main.c:247: setDigits();
 	lcall	_setDigits
 00115$:
-;	.\src\main.c:250: if (!P3_4)
-	jb	_P3_4,00118$
+;	.\src\main.c:250: if (!P3_2)
+	jb	_P3_2,00118$
 ;	.\src\main.c:253: DelayMS(10);
 	mov	dpl,#0x0a
 	lcall	_DelayMS
